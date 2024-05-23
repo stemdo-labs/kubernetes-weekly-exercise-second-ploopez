@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: laravel
+data:
+  database_name: lav1
+  database_user: user1
+  database_host: mysql-service
+  database_port: "3306"
