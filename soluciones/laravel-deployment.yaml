@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: laravel
+  name: laravel-deployment
   namespace: laravel
 spec:
   replicas: 1
@@ -26,22 +26,20 @@ spec:
           ports:
             - containerPort: 8000
           readinessProbe:
-            tcpSocket:
-              port: 8000
-            initialDelaySeconds: 5
+            exec:
+              command:
+                - ls
+            initialDelaySeconds: 10
             periodSeconds: 10
           livenessProbe:
             tcpSocket:
               port: 8000
             initialDelaySeconds: 10
             periodSeconds: 20
-          # volumeMounts:
-          #   - name: storage-volume
-          #     mountPath: /app
-          # volumes:
-          #   - name: storage-volume
-          #     persistentVolumeClaim:
-          #       claimName: laravel-pvc  
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /app
+      
           env:
             - name: LARAVEL_DATABASE_HOST
               valueFrom:
@@ -68,3 +66,7 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: database_password
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: laravel-pvc  

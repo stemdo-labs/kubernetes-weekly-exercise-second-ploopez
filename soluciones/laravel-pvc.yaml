@@ -4,6 +4,7 @@ metadata:
   name: laravel-pvc
   namespace: laravel
 spec:
+  storageClassName: storage-class-laravel
   accessModes:
     - ReadWriteOnce
   resources:
