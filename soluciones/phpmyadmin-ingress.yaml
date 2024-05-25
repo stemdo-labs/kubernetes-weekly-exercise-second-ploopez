@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: phpmyadmin-ingress
+  namespace: laravel
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: laravel.com
+    http:
+      paths:
+      - path: /phpmyadmin
+        pathType: Prefix
+        backend:
+          service:
+            name: phpmyadmin-service
+            port:
+              number: 80
