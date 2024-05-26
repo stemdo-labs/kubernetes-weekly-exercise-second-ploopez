@@ -1,8 +1,9 @@
+{{- if .Values.phpmyadminisdeployed }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: phpmyadmin-deployment
-  namespace: laravel
+  namespace: {{.Values.namespace}}
 spec:
   selector:
     matchLabels:
@@ -15,9 +16,9 @@ spec:
     spec:
       containers:
         - name: phpmyadmin
-          image: phpmyadmin/phpmyadmin:5.2.1
+          image: "phpmyadmin/phpmyadmin:{{.Values.phpmyadmintag}}"
           ports:
-            - containerPort: 80       
+            - containerPort: 80     
           env:
             - name: PMA_HOST
               valueFrom:
@@ -34,4 +35,5 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: database_root_password
+{{- end}}
 

@@ -1,8 +1,9 @@
+{{- if .Values.phpmyadminisdeployed}}
 apiVersion: v1
 kind: Service
 metadata:
   name: phpmyadmin-service
-  namespace: laravel
+  namespace: {{.Values.namespace}}
   labels:
     app: phpmyadmin
 spec:
@@ -13,3 +14,4 @@ spec:
       nodePort: 30080
   selector:
     app: phpmyadmin
+{{- end}}

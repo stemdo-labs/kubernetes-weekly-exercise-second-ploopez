@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: laravel-deployment
-  namespace: laravel
+  namespace: {{.Values.namespace}}
 spec:
-  replicas: 1
+  replicas: {{.Values.laravelreplicaCount}}
   selector:
     matchLabels:
       app: laravel
@@ -15,14 +15,14 @@ spec:
     spec:
       containers:
         - name: laravel
-          image: bitnami/laravel:11.0.8
+          image: "bitnami/laravel:{{.Values.laraveltag}}"
           resources:
             requests:
-              cpu: "100m"
-              memory: "256Mi"
+              cpu: {{.Values.laravelCPU}}
+              memory: {{.Values.laravelMemory}}
             limits:
-              cpu: "500m"
-              memory: "512Mi"
+              cpu: {{.Values.laravellimitsCPU}}
+              memory: {{.Values.laravellimitsMemory}}
           ports:
             - containerPort: 8000
           readinessProbe:

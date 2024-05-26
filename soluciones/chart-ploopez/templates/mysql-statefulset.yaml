@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql-statefulset
-  namespace: laravel
+  namespace: {{.Values.namespace}}
 spec:
   serviceName: mysql-service
-  replicas: 1
+  replicas: {{.Values.mysqlreplicaCount}}
   selector:
     matchLabels:
       app: mysql
@@ -16,17 +16,17 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: mysql:8.4.0
+          image: "mysql:{{.Values.mysqltag}}"
           volumeMounts:
             - name: mysql-storage
               mountPath: /var/lib/mysql
           resources:
             requests:
-              cpu: "500m"
-              memory: "512Mi"
+              cpu: {{.Values.mysqlCPU}}
+              memory: {{.Values.mysqlMemory}}
             limits:
-              cpu: "1000m"
-              memory: "1Gi"
+              cpu: {{.Values.mysqllimitsCPU}}
+              memory: {{.Values.mysqllimitsMemory}}
           env:
             - name: MYSQL_USER
               valueFrom:
