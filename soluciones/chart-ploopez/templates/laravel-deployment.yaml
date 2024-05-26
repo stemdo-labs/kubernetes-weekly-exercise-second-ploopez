@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel-deployment
+  namespace: {{.Values.namespace}}
+spec:
+  replicas: {{.Values.laravelreplicaCount}}
+  selector:
+    matchLabels:
+      app: laravel
+  template:
+    metadata:
+      labels:
+        app: laravel
+    spec:
+      containers:
+        - name: laravel
+          image: "bitnami/laravel:{{.Values.laraveltag}}"
+          resources:
+            requests:
+              cpu: {{.Values.laravelCPU}}
+              memory: {{.Values.laravelMemory}}
+            limits:
+              cpu: {{.Values.laravellimitsCPU}}
+              memory: {{.Values.laravellimitsMemory}}
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            exec:
+              command:
+                - ls
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /app
+      
+          env:
+            - name: LARAVEL_DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: database_host
+            - name: LARAVEL_DATABASE_PORT_NUMBER
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: database_port
+            - name: LARAVEL_DATABASE_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: database_user
+            - name: LARAVEL_DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: database_name
+            - name: LARAVEL_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: database_password
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: laravel-pvc  

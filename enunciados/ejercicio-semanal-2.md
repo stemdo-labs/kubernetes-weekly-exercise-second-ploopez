@@ -13,18 +13,12 @@ Todo esto lo empaquetaremos en un chart de Helm.
 ### Requisitos del despliegue: ###
 1. *Todos* los elementos deben desplegarse en un namespace con el nombre `laravel`.
 1. Laravel:
-    - Se usará la imagen de  bitnami/laravel
-    - Laravel tiene que tener tanto limites como requests de CPU y GPU
-    - Laravel tiene que tener un readinessProbe y un livenessProbe
-    - Volumen persistente para Laravel
-    - Ingress para acceder a Laravel  desde un navegador
-    
 
-1. BBDD:
-    - Se usará la imagen **``oficial``** de la BBDD `mysql` en la versión mysql
-    - La BBDD tiene que tener tanto limites como requests de CPU y GPU
-    - Volumen  persistentes para la BBDD
-    - No debe ser un deployment (¿Qué objeto sería el adecuado?)
+
+    hecho   - Laravel tiene que tener un readinessProbe y un livenessProbe
+    hecho   - Volumen persistente para Laravel
+
+    
 
 1. phpmyadmin:
     - Se usará la imagen **``oficial``** de `phpmyadmin`

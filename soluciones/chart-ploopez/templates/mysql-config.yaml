@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: {{ .Values.namespace }}
+data:
+  database_name: {{ .Values.dbname }}
+  database_user: {{ .Values.dbuser }}
+  database_host: mysql-service
+  database_port: "3306"

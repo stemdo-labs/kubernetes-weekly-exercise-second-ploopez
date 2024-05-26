@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-statefulset
+  namespace: {{.Values.namespace}}
+spec:
+  serviceName: mysql-service
+  replicas: {{.Values.mysqlreplicaCount}}
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: "mysql:{{.Values.mysqltag}}"
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+          resources:
+            requests:
+              cpu: {{.Values.mysqlCPU}}
+              memory: {{.Values.mysqlMemory}}
+            limits:
+              cpu: {{.Values.mysqllimitsCPU}}
+              memory: {{.Values.mysqllimitsMemory}}
+          env:
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: database_user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: database_password
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: database_root_password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: database_name
+            - name: MYSQL_INITDB_SKIP_TZINFO
+              value: skip
+          ports:
+            - containerPort: 3306
+              name: mysql
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
